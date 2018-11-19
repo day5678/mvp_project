@@ -1,0 +1,86 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+kapt {
+    arguments {
+        arg("moduleName", project.getName())
+    }
+}
+
+android {
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion build_tools_version
+
+    defaultConfig {
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    // constraint
+    api "com.android.support.constraint:constraint-layout:$constraint_layout_version"
+
+    // support
+    api "com.android.support:support-v4:${android_support_version}"
+    api "com.android.support:appcompat-v7:${android_support_version}"
+    api "com.android.support:recyclerview-v7:${android_support_version}"
+    api "com.android.support:design:${android_support_version}"
+    api "com.android.support:cardview-v7:${android_support_version}"
+
+    // kotlin
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api "org.jetbrains.anko:anko-commons:$anko_version"
+
+    // ARouter
+    api "com.alibaba:arouter-api:$arouter_api_version"
+
+    // Retrofit
+    api "com.squareup.okhttp3:okhttp:${ok_http_version}"
+    api "com.squareup.retrofit2:retrofit:${retrofit_version}"
+    api "com.squareup.okhttp3:logging-interceptor:${ok_http_version}"
+    api "com.squareup.retrofit2:converter-gson:${retrofit_version}"
+    api "com.squareup.retrofit2:adapter-rxjava2:${retrofit_version}"
+
+    // Rx
+    api "io.reactivex.rxjava2:rxkotlin:${rx_kotlin_version}"
+    api "io.reactivex.rxjava2:rxandroid:${rx_android_version}"
+    api "io.reactivex.rxjava2:rxjava:${rx_java_version}"
+    api "com.trello.rxlifecycle2:rxlifecycle-kotlin:${rx_lifecycle_version}"
+    api "com.trello.rxlifecycle2:rxlifecycle-components:${rx_lifecycle_version}"
+
+    // Dagger2
+    api "com.google.dagger:dagger-android:$dagger_version"
+    api "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    api "org.glassfish:javax.annotation:10.0-b28"
+
+    // Glide
+    api "com.github.bumptech.glide:glide:$glide_version"
+
+    // 滑动关闭activity
+    api "me.imid.swipebacklayout.lib:library:$swipebacklayout"
+
+    // Logger日志打印
+    api "com.orhanobut:logger:$orhanobut_logger"
+}

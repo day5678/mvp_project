@@ -1,0 +1,82 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    // 版本号
+    ext.version_name = 'v1.1.0'
+    // 最小支持版本
+    ext.min_sdk_version = 19
+    // 目标版本
+    ext.target_sdk_version = 28
+    // 编译应用的Android SDK版本（它纯粹只是在编译的时候使用）
+    ext.compile_sdk_version = 28
+    // gradle构建版本
+    ext.build_tools_gradle = "3.2.1"
+    // 构建工具的版本
+    ext.build_tools_version = "28.0.3"
+    // v4、v7、design的各种版本
+    ext.android_support_version = "28.0.0"
+    // 约束布局版本
+    ext.constraint_layout_version = '1.1.3'
+
+    // kotlin版本
+    ext.kotlin_version = '1.2.61'
+    // kotlin配套ANKO
+    ext.anko_version = '0.10.5'
+
+    // multi_dex版本
+    ext.multidex_version='1.0.3'
+
+    /********************* 三方版本 *****************************/
+    // rx的kotlin版本
+    ext.rx_kotlin_version = '2.2.0'
+    // rx的android版本
+    ext.rx_android_version = '2.0.2'
+    // rx的lifecycle版本
+    ext.rx_lifecycle_version = '2.2.1'
+    // rx版本
+    ext.rx_java_version="2.1.5"
+    // ok_http版本
+    ext.ok_http_version = '3.11.0'
+    // retrofit版本
+    ext.retrofit_version = '2.4.0'
+    // dagger版本
+    ext.dagger_version = '2.16'
+    // glide版本
+    ext.glide_version = "4.5.0"
+    // ARouter版本
+    ext.arouter_api_version = '1.3.1'
+    // ARouter的compiler版本
+    ext.arouter_compiler_version = '1.1.4'
+    // ARouter的register版本
+    ext.arouter_register = '1.0.2'
+    // 滑动关闭activity版本
+    ext.swipebacklayout = '1.1.0'
+    // 日志版本
+    ext.orhanobut_logger = '2.2.0'
+
+    repositories {
+        google()
+        maven{ url 'https://jitpack.io' }
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$build_tools_gradle"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.alibaba:arouter-register:$arouter_register"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        maven{ url 'https://jitpack.io' }
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

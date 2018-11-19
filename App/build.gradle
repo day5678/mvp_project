@@ -1,0 +1,114 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+kapt {
+    arguments {
+        arg("moduleName", project.getName())
+    }
+}
+
+android {
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion build_tools_version
+
+    def versionBuild
+
+    if (System.getenv('GITLAB_CI') == null) {
+        versionBuild = Integer.MAX_VALUE
+    } else {
+        versionBuild = System.getenv('CI_PIPELINE_ID').toInteger()
+    }
+
+    defaultConfig {
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode versionBuild
+        versionName version_name
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        flavorDimensions "versionCode"
+
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file("../signtsingho.jks")
+            storePassword "tsingho"
+            keyAlias "tsingho-oa"
+            keyPassword "tsingho"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "tsingho-oa.apk"
+        }
+    }
+    productFlavors {
+        // 开发环境
+        stageDev {
+            applicationId "cn.tsingho.oa.dev"
+            buildConfigField "String", "BASE_URL", BASE_URL_DEVELOP
+            buildConfigField "boolean", "SHOW_TEST_MODE", "true"
+            manifestPlaceholders = [app_icon     : "@mipmap/ic_launcher_dev",
+                                    JPUSH_PKGNAME: applicationId,
+                                    JPUSH_APPKEY : "b07e5ca7f6e00e5b06672683",
+                                    JPUSH_CHANNEL: "developer-default"]
+        }
+        // 测试环境
+        stageTest {
+            applicationId "cn.tsingho.oa.test"
+            buildConfigField "String", "BASE_URL", BASE_URL_TEST
+            buildConfigField "boolean", "SHOW_TEST_MODE", "true"
+            manifestPlaceholders = [app_icon     : "@mipmap/ic_launcher_test",
+                                    JPUSH_PKGNAME: applicationId,
+                                    JPUSH_APPKEY : "9513950b46f29d7f0138e35f",
+                                    JPUSH_CHANNEL: "developer-default"]
+        }
+        // 预发布环境
+        stagePre {
+            applicationId "cn.tsingho.oa.pre"
+            buildConfigField "String", "BASE_URL", BASE_URL_PRE
+            buildConfigField "boolean", "SHOW_TEST_MODE", "false"
+            manifestPlaceholders = [app_icon     : "@mipmap/ic_launcher_pre",
+                                    JPUSH_PKGNAME: applicationId,
+                                    JPUSH_APPKEY : "c23292ce6e92364b780de8a1",
+                                    JPUSH_CHANNEL: "developer-default"]
+        }
+        // 线上环境
+        stageOnline {
+            applicationId "cn.tsingho.oa"
+            buildConfigField "String", "BASE_URL", BASE_URL_ONLINE
+            buildConfigField "boolean", "SHOW_TEST_MODE", "false"
+            manifestPlaceholders = [app_icon     : "@mipmap/ic_launcher",
+                                    JPUSH_PKGNAME: applicationId,
+                                    JPUSH_APPKEY : "d9471048a4e954985f85887b",
+                                    JPUSH_CHANNEL: "developer-default"]
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':BaseLibrary')
+
+    // 4.4无法启动问题
+    api "com.android.support:multidex:$multidex_version"
+
+    // dagger
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    // ARouter
+    kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
+}
